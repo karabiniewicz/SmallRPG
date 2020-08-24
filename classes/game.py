@@ -1,4 +1,4 @@
-import random
+import random, pprint
 
 
 class Colors:
@@ -13,7 +13,7 @@ class Colors:
 
 
 class Person:
-    def __init__(self, hp, mp, atk, df, magic):
+    def __init__(self, hp, mp, atk, df, magic, items):
         self.maxhp = hp
         self.hp = hp
         self.maxmp = mp
@@ -22,7 +22,8 @@ class Person:
         self.atkh = atk + 10
         self.df = df
         self.magic = magic
-        self.actions = ["Attack", "Magic"]
+        self.items = items
+        self.actions = ["Attack", "Magic", "Items"]
 
     def generate_damage(self):
         return random.randrange(self.atkl, self.atkh)
@@ -37,7 +38,6 @@ class Person:
         self.hp += dmg
         if self.hp > self.maxhp:
             self.hp = self.maxhp
-
 
     def get_hp(self):
         return self.hp
@@ -54,17 +54,23 @@ class Person:
     def reduce_mp(self, cost):
         self.mp -= cost
 
-
     def choose_action(self):
         i = 1
-        print(Colors.BLUE + Colors.BOLD + "Actions" + Colors.ENDC)
+        print("\n" + Colors.BLUE + Colors.BOLD + "ACTIONS:" + Colors.ENDC)
         for item in self.actions:
-            print(str(i) + ":", item)
+            print("    " + str(i) + ":", item)
             i += 1
 
     def choose_magic(self):
         i = 1
-        print(Colors.BLUE + Colors.BOLD + "Magic" + Colors.ENDC)
+        print("\n" + Colors.BLUE + Colors.BOLD + "MAGIC:" + Colors.ENDC)
         for spell in self.magic:
-            print(str(i) + ":", spell.name, "(cost:", str(spell.cost) + ")")
+            print("    " + str(i) + ":", spell.name, "(cost:", str(spell.cost) + ")")
+            i += 1
+
+    def choose_item(self):
+        i = 1
+        print("\n" + Colors.GREEN + Colors.BOLD + "ITEMS:" + Colors.ENDC)
+        for item in self.items:
+            print("    " + str(i) + ":", item.name, ":", item.descripton, " (x5)")
             i += 1
