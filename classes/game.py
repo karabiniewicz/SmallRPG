@@ -57,7 +57,9 @@ class Person:
 
     def choose_action(self):
         i = 1
-        print("\n" + Colors.BLUE + Colors.BOLD + "ACTIONS:" + Colors.ENDC)
+        print("\n" + "    " + Colors.BOLD + self.name + Colors.ENDC)
+        print(Colors.BLUE + Colors.BOLD + "ACTIONS:" + Colors.ENDC)
+
         for item in self.actions:
             print("    " + str(i) + ":", item)
             i += 1
@@ -77,10 +79,108 @@ class Person:
                   "(x" + str(item["quantity"]) + ")")
             i += 1
 
+    def choose_target(self, enemies):
+        i = 1
+
+        print("\n" + Colors.FAIL + Colors.BOLD + "    TARGET:" + Colors.ENDC)
+        for enemy in enemies:
+            if enemy.get_hp() != 0:
+                print("        " + str(i) + ".", enemy.name)
+                i += 1
+        choice = int(input("    Choose target:")) - 1
+        return choice
+
+    def get_enemy_stats(self):
+        hp_bar = ""
+        bar_ticks = (self.hp / self.maxhp) * 100 / 2
+
+        while bar_ticks > 0:
+            hp_bar += "█"
+            bar_ticks -= 1
+
+        while len(hp_bar) < 50:
+            hp_bar += " "
+
+        hp_string = str(self.hp) + "/" + str(self.maxhp)
+        current_hp = ""
+
+        if len(hp_string) < 11:
+            decreased = 11 - len(hp_string)
+
+            while decreased > 0:
+                current_hp += " "
+                decreased -= 1
+
+            current_hp += hp_string
+        else:
+            current_hp = hp_string
+
+        print("                    __________________________________________________ ")
+        print(Colors.BOLD + self.name + "  " +
+              current_hp + " |" + Colors.FAIL + hp_bar + Colors.ENDC + "|")
+
     def get_stats(self):
-        print(
-            "                 ________________________           __________ \n" +
-            Colors.BOLD + self.name, self.hp + "/" + self.maxhp, "|" + Colors.GREEN + "████████████████████████|" +
-            Colors.ENDC + Colors.BOLD + self.mp + "/" + self.maxmp,
-            "|" + Colors.BLUE + "██████████|" + Colors.ENDC + "\n"
-        )
+        hp_bar = ""
+        bar_ticks = (self.hp / self.maxhp) * 100 / 4
+
+        mp_bar = ""
+        mp_ticks = (self.mp / self.maxmp) * 100 / 10
+
+        while bar_ticks > 0:
+            hp_bar += "█"
+            bar_ticks -= 1
+
+        while len(hp_bar) < 25:
+            hp_bar += " "
+
+        while mp_ticks > 0:
+            mp_bar += "█"
+            mp_ticks -= 1
+
+        while len(mp_bar) < 10:
+            mp_bar += " "
+
+        hp_string = str(self.hp) + "/" + str(self.maxhp)
+        current_hp = ""
+
+        if len(hp_string) < 9:
+            decreased = 9 - len(hp_string)
+
+            while decreased > 0:
+                current_hp += " "
+                decreased -= 1
+
+            current_hp += hp_string
+        else:
+            current_hp = hp_string
+
+        mp_string = str(self.mp) + "/" + str(self.maxmp)
+        current_mp = ""
+
+        if len(mp_string) < 7:
+            decreased = 7 - len(mp_string)
+            while decreased > 0:
+                current_mp += " "
+                decreased -= 1
+
+            current_mp += mp_string
+
+        else:
+            current_mp = mp_string
+
+        print("                     _________________________              __________ ")
+        print(Colors.BOLD + self.name + "    " +
+              current_hp + " |" + Colors.GREEN + hp_bar + Colors.ENDC + "|    " +
+              current_mp + " |" + Colors.BLUE + mp_bar + Colors.ENDC + "|")
+
+    def choose_enemy_spell(self):
+        magic_choice = random.randrange(0, len(self.magic))
+        spell = self.magic[magic_choice]
+        magic_dmg = spell.generate_damage()
+
+        pct = self.hp / self.maxhp * 100
+
+        if self.mp < spell.cost or spell.type == "white" and pct > 50:
+            self.choose_enemy_spell()
+        else:
+            return spell, magic_dmg
