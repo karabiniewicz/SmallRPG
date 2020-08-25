@@ -1,4 +1,4 @@
-import random, pprint
+import random
 
 
 class Colors:
@@ -13,7 +13,8 @@ class Colors:
 
 
 class Person:
-    def __init__(self, hp, mp, atk, df, magic, items):
+    def __init__(self, name, hp, mp, atk, df, magic, items):
+        self.name = name
         self.maxhp = hp
         self.hp = hp
         self.maxmp = mp
@@ -72,5 +73,14 @@ class Person:
         i = 1
         print("\n" + Colors.GREEN + Colors.BOLD + "ITEMS:" + Colors.ENDC)
         for item in self.items:
-            print("    " + str(i) + ":", item.name, ":", item.descripton, " (x5)")
+            print("    " + str(i) + ":", item["item"].name + ":", item["item"].descripton,
+                  "(x" + str(item["quantity"]) + ")")
             i += 1
+
+    def get_stats(self):
+        print(
+            "                 ________________________           __________ \n" +
+            Colors.BOLD + self.name, self.hp + "/" + self.maxhp, "|" + Colors.GREEN + "████████████████████████|" +
+            Colors.ENDC + Colors.BOLD + self.mp + "/" + self.maxmp,
+            "|" + Colors.BLUE + "██████████|" + Colors.ENDC + "\n"
+        )

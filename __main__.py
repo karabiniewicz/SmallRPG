@@ -22,15 +22,23 @@ megaelixer = Item("Mega elixer", "elixer", "Restores party's HP/MP", 9999)
 granade = Item("Granade", "attack", "Deals 500 HP", 500)
 
 player_magic = [fire, water, air, thunder, blizzard, cura, cure]
-player_items = [potion, hipotion, superpotion, elixer, megaelixer, granade]
-
+player_items = [{"item": potion, "quantity": 15}, {"item": hipotion, "quantity": 5},
+                {"item": superpotion, "quantity": 5}, {"item": elixer, "quantity": 5},
+                {"item": megaelixer, "quantity": 2}, {"item": granade, "quantity": 5}]
 
 # Create People
-player = Person(480, 60, 40, 34, player_magic, player_items)
-enemy = Person(740, 40, 35, 25, [], [])
+player1 = Person("Wojtek: ", 480, 60, 40, 34, player_magic, player_items)
+player2 = Person("Piotrek:", 480, 60, 40, 34, player_magic, player_items)
+player3 = Person("Janek:  ", 480, 60, 40, 34, player_magic, player_items)
+enemy = Person("Ako: ", 740, 40, 35, 25, [], [])
 
 print("\n" + Colors.FAIL + Colors.BOLD + "Enemy attacks you!" + Colors.ENDC)
+
 while True:
+    print("\n"
+          "NAME             HP                                 MP\n"
+          )
+
     player.choose_action()
     choice = input("Choose action:")
     choice = int(choice) - 1
@@ -64,10 +72,24 @@ while True:
         player.choose_item()
         item_choice = int(input("Choose item:")) - 1
 
-        item = player.items[item_choice]
+        item = player.items[item_choice]["item"]
+
+        if player.items[item_choice]["quantity"] == 0:
+            print(Colors.FAIL + "\n" + item.name, "is left..." + Colors.ENDC)
+            continue
+
+        player.items[item_choice]["quantity"] -= 1
+
         if item.type == "potion":
-            player.heal(item.prop)
-            print(Colors)
+            player.heal(item.value)
+            print(Colors.GREEN + "\n" + item.name + " heals for", str(item.value), "HP" + Colors.ENDC)
+        elif item.type == "elixer":
+            player.hp = player.maxhp
+            player.mp = player.maxmp
+            print(Colors.GREEN + "\n" + item.name + " fully restores HP/MP" + Colors.ENDC)
+        elif item.type == "attack":
+            enemy.take_damage(item.value)
+            print(Colors.FAIL + "\n" + item.name + "deals" + str(item.value) + "points of damage" + Colors.ENDC)
 
     enemy_choice = 1
     enemy_dmg = enemy.generate_damage()
